@@ -1,0 +1,13 @@
+html,
+body {
+	overflow: hidden;
+}
+
+body {
+	margin: 0;
+}
+
+#view {
+	margin: auto;
+	display: block;
+}
