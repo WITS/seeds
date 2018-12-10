@@ -69,6 +69,15 @@ class Curve {
 			end: end.clone(),
 			width: this.width
 		};
+		// Calculate average z
+		this.z = (this.start.z + this.end.z) * 0.5;
+		// Calculate fade-out
+		const fadeA = Math.max(0, Math.min((3 - this.z) / 6, 0.5)) * 0.75;
+		if (fadeA > 0) {
+			this.fadeColor = `rgba(255, 255, 255, ${fadeA})`;
+		} else {
+			this.fadeColor = null;
+		}
 	}
 
 	// Updates the values of a Point based on animation state
@@ -106,7 +115,6 @@ class Curve {
 		ctx.strokeStyle = this.color;
 		ctx.lineWidth = this.width * V_RATIO;
 		ctx.lineCap = 'round';
-		// ctx.globalAlpha = Math.max(0.5, Math.min((5 - this.start.z), 1));
 		ctx.beginPath();
 		ctx.moveTo(
 			x(this.start.vx), y(this.start.vy)
@@ -117,6 +125,11 @@ class Curve {
 		   x(this.end.vx),   y(this.end.vy)
 		);
 		ctx.stroke();
+		// Fade-out
+		if (this.fadeColor) {
+			ctx.strokeStyle = this.fadeColor;
+			ctx.stroke();
+		}
 	}
 }
 

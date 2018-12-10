@@ -26,6 +26,9 @@ class Plant {
 			t: T,
 			path: []
 		});
+
+		// Sort the parts
+		this.sort();
 	}
 
 	// Generates the surface portion of the plant
@@ -105,7 +108,7 @@ class Plant {
 	// Sorts each of the parts of this plant so that they render
 	// with the respect to depth (z)
 	sort() {
-		// TODO
+		this.parts = this.parts.sort((a, b) => a.z - b.z);
 	}
 
 	// Renders the entire plant to the canvas
