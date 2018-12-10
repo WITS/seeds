@@ -8,8 +8,6 @@ class Plant {
 			[1, 2, 2, 2, 2, 2, 3, 3],
 			[1, 2, 2, 2, 2],
 			[2],
-			[2],
-			[2],
 			[2, 2, 2, 3],
 			[3],
 			[1, 1, 1, 3, 4]
@@ -20,11 +18,13 @@ class Plant {
 		this.parts = [];
 		this.generate({
 			x: V_W / 2,
-			y: V_H,
+			y: V_H + 50,
 			z: 0,
 			a: 3 * PI / 2,
-			l: 150,
-			w: 10
+			l: 200,
+			w: 10,
+			t: T,
+			path: []
 		});
 	}
 
@@ -41,6 +41,7 @@ class Plant {
 		x += prev.l * Math.cos(a);
 		y += prev.l * Math.sin(a);
 		z += range(-1.25, 1.25);
+		const duration = prev.l * range(8, 12);
 
 		// Calculate control points
 		const dx  = x - prev.x;
@@ -71,11 +72,16 @@ class Plant {
 			cp2,
 			P(      x,      y,      z ),
 			{
-				width: prev.w
+				width: prev.w,
+				t: prev.t,
+				duration: duration
 			}
 		));
 
-		const count = this.splitTypes[irandom(this.splitTypes.length)];
+		let count = 0;
+		do {
+			count = this.splitTypes[irandom(this.splitTypes.length)];
+		} while (count === 1 && prev.path.every(n => n === 1));
 
 		for (let i = count; i --; ) {
 			this.generate({
@@ -84,7 +90,9 @@ class Plant {
 				z: z,
 				a: a + range(-0.96, 0.96),
 				l: prev.l * range(0.7, 0.95),
-				w: prev.w * range(0.65, 0.85)
+				w: prev.w * range(0.65, 0.85),
+				t: prev.t + duration,
+				path: prev.path.concat(count)
 			});
 		}
 	}

@@ -67,8 +67,13 @@ document.on('DOMContentLoaded', () => {
 	requestAnimationFrame(update);
 });
 
+PREV_FRAME = Date.now();
+
 function update() {
 	requestAnimationFrame(update);
+
+	T += Date.now() - PREV_FRAME;
+	PREV_FRAME = Date.now();
 
 	ctx.clearRect(0, 0, c.width, c.height);
 
