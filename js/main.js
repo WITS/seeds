@@ -20,12 +20,22 @@ document.on('DOMContentLoaded', () => {
 			window.innerHeight / V_H
 		);
 
-		c.style.width = `${V_RATIO * V_W}px`;
-		c.style.height = `${V_RATIO * V_H}px`;
+		// c.style.width = `${V_RATIO * V_W}px`;
+		// c.style.height = `${V_RATIO * V_H}px`;
+
+		// V_RATIO *= DPI;
+		// c.width = V_W * V_RATIO;
+		// c.height = V_H * V_RATIO;
+
+		c.style.width = `${window.innerWidth}px`;
+		c.style.height = `${window.innerHeight}px`;
+
+		V_X = (V_W - (window.innerWidth  / V_RATIO)) * 0.5;
+		V_Y = (V_H - (window.innerHeight / V_RATIO)) * 0.5;
 
 		V_RATIO *= DPI;
-		c.width = V_W * V_RATIO;
-		c.height = V_H * V_RATIO;
+		c.width = window.innerWidth * DPI;
+		c.height = window.innerHeight * DPI;
 	};
 
 	window.on('resize', resize);
@@ -60,7 +70,7 @@ document.on('DOMContentLoaded', () => {
 function update() {
 	requestAnimationFrame(update);
 
-	ctx.clearRect(0, 0, V_W * V_RATIO, V_H * V_RATIO);
+	ctx.clearRect(0, 0, c.width, c.height);
 
 	plant.render();
 
