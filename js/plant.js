@@ -4,7 +4,16 @@ class Plant {
 		// Set properties for generation
 		this.hasFlowers = true;
 		this.hasThorns = true;
-		this.splitTypes = [1, 2, 2, 2, 2, 2, 3, 3];
+		this.splitTypes = choose(
+			[1, 2, 2, 2, 2, 2, 3, 3],
+			[1, 2, 2, 2, 2],
+			[2],
+			[2],
+			[2],
+			[2, 2, 2, 3],
+			[3],
+			[1, 1, 1, 3, 4]
+		);
 		this.minW = 4.5;
 		
 		// Generate parts

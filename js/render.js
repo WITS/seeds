@@ -60,10 +60,14 @@ class Curve {
 		ctx.lineWidth = this.width * V_RATIO;
 		ctx.lineCap = 'round';
 		ctx.beginPath();
-		ctx.moveTo(x(this.start.vx), y(this.start.vy));
-		ctx.bezierCurveTo(x(this.md1.vx),   y(this.md1.vy),
-		                  x(this.md2.vx),   y(this.md2.vy),
-		                  x(this.end.vx),   y(this.end.vy));
+		ctx.moveTo(
+			x(this.start.vx), y(this.start.vy)
+		);
+		ctx.bezierCurveTo(
+			x(this.md1.vx),   y(this.md1.vy),
+		   x(this.md2.vx),   y(this.md2.vy),
+		   x(this.end.vx),   y(this.end.vy)
+		);
 		ctx.stroke();
 	}
 }
