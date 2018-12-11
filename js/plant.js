@@ -39,17 +39,17 @@ class Plant {
 			return;
 		} else if (prev.patternIndex !== 0 && this.hasThorns && irandom(5)) {
 			// Add a thorn
-			const duration = 2000;
+			const duration = irange(800, 5000);
 			this.parts.push(new Leaf({
 				x: prev.x,
 				y: prev.y,
 				z: prev.z,
 				// Make the angle roughly perpendicular to this branch
-				a: prev.a + choose(-1, 1) * PI / 2 + range(-0.2, 0.2),
-				t: prev.t,
+				a: prev.a + choose(-1, 1) * PI / 2 + range(-0.36, 0.36),
+				t: prev.t - 50,
 				duration: duration
 			}));
-			prev.t += duration;
+			prev.t += range(0.5, 1) * duration;
 		}
 
 		// Calculate the end destination
