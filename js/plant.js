@@ -75,6 +75,7 @@ class Plant {
 			cp2,
 			P(      x,      y,      z ),
 			{
+				color: '#3E2723',
 				width: prev.w,
 				t: prev.t,
 				duration: duration

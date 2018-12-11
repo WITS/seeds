@@ -72,7 +72,7 @@ class Curve {
 		// Calculate average z
 		this.z = (this.start.z + this.end.z) * 0.5;
 		// Calculate fade-out
-		const fadeA = Math.max(0, Math.min((3 - this.z) / 6, 0.5)) * 0.75;
+		const fadeA = Math.max(0, Math.min((3 - this.z) / 6, 0.5)) * 0.5;
 		if (fadeA > 0) {
 			this.fadeColor = `rgba(255, 255, 255, ${fadeA})`;
 		} else {
