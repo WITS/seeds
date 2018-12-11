@@ -37,6 +37,19 @@ class Plant {
 		if (prev.w < this.minW) {
 			// Stop here
 			return;
+		} else if (prev.patternIndex !== 0 && this.hasThorns && irandom(5)) {
+			// Add a thorn
+			const duration = 2000;
+			this.parts.push(new Leaf({
+				x: prev.x,
+				y: prev.y,
+				z: prev.z,
+				// Make the angle roughly perpendicular to this branch
+				a: prev.a + choose(-1, 1) * PI / 2 + range(-0.2, 0.2),
+				t: prev.t,
+				duration: duration
+			}));
+			prev.t += duration;
 		}
 
 		// Calculate the end destination

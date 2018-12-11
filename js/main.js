@@ -20,13 +20,6 @@ document.on('DOMContentLoaded', () => {
 			window.innerHeight / V_H
 		);
 
-		// c.style.width = `${V_RATIO * V_W}px`;
-		// c.style.height = `${V_RATIO * V_H}px`;
-
-		// V_RATIO *= DPI;
-		// c.width = V_W * V_RATIO;
-		// c.height = V_H * V_RATIO;
-
 		c.style.width = `${window.innerWidth}px`;
 		c.style.height = `${window.innerHeight}px`;
 
