@@ -31,7 +31,7 @@ document.on('DOMContentLoaded', () => {
 		c.style.height = `${window.innerHeight}px`;
 
 		V_X = (V_W - (window.innerWidth  / V_RATIO)) * 0.5;
-		V_Y = (V_H - (window.innerHeight / V_RATIO)) * 0.5;
+		V_Y = V_H - (window.innerHeight / V_RATIO);
 
 		V_RATIO *= DPI;
 		c.width = window.innerWidth * DPI;
