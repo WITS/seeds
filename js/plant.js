@@ -4,13 +4,13 @@ class Plant {
 		// Set properties for generation
 		this.hasFlowers = true;
 		this.hasThorns = true;
-		this.splitTypes = choose(
-			[1, 2, 2, 2, 2, 2, 3, 3],
-			[1, 2, 2, 2, 2],
-			[2],
-			[2, 2, 2, 3],
-			[3],
-			[1, 1, 1, 3, 4]
+		this.splitPattern = choose(
+			[2, 3, 2, 3, 1],
+			[2, 2, 3, 2, 1],
+			[3, 2, 2, 2, 1],
+			[3, 2, 3, 2, 1],
+			[3, 3, 2, 2, 1],
+			[4, 2, 2, 3, 1]
 		);
 		this.minW = 4.5;
 		
@@ -24,7 +24,7 @@ class Plant {
 			l: 200,
 			w: 10,
 			t: T,
-			path: []
+			patternIndex: 0
 		});
 
 		// Sort the parts
@@ -82,10 +82,7 @@ class Plant {
 			}
 		));
 
-		let count = 0;
-		do {
-			count = this.splitTypes[irandom(this.splitTypes.length)];
-		} while (count === 1 && prev.path.every(n => n === 1));
+		const count = this.splitPattern[prev.patternIndex];
 
 		for (let i = count; i --; ) {
 			this.generate({
@@ -96,7 +93,7 @@ class Plant {
 				l: prev.l * range(0.7, 0.95),
 				w: prev.w * range(0.65, 0.85),
 				t: prev.t + duration,
-				path: prev.path.concat(count)
+				patternIndex: prev.patternIndex + 1
 			});
 		}
 	}
