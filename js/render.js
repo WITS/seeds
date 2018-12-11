@@ -144,7 +144,7 @@ class Leaf {
 
 	constructor(json) {
 		this.start = P(json.x, json.y, json.z);
-		const l = this.l = 60;
+		const l = this.l = irange(40, 80);
 		const a = this.a = json.a || 0;
 		this.end = P(
 			this.start.x + l * Math.cos(a),
@@ -156,7 +156,7 @@ class Leaf {
 
 		// Create mirrored control points
 		const a1 = 0.75;
-		const l1 = this.l * 0.3333;
+		const l1 = this.l * range(0.25, 0.4);
 		const z1 = (this.end.z - this.start.z) * 0.3333;
 		this.fm1 = P(
 			this.start.x + l1 * Math.cos(a + a1),
@@ -170,7 +170,7 @@ class Leaf {
 		);
 		
 		const a2 = 0.5;
-		const l2 = this.l * 0.6667;
+		const l2 = this.l * range(0.6, 0.75);
 		const z2 = (this.end.z - this.start.z) * 0.6667;
 		this.fm2 = P(
 			this.start.x + l2 * Math.cos(a + a2),
@@ -232,7 +232,7 @@ class Leaf {
 		}
 
 		ctx.fillStyle = this.color;
-		ctx.strokeStyle = 'rgba(0, 0, 0, 0.16)';
+		ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
 		ctx.lineWidth = 1.25 * V_RATIO;
 		ctx.beginPath();
 		ctx.moveTo(
