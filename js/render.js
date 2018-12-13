@@ -44,6 +44,20 @@ class Point {
 	clone() {
 		return new Point(this.x, this.y, this.z);
 	}
+
+	// Updates the values of this Point based on animation state
+	animate(start, end, t) {
+		this.x = start.x + (end.x - start.x) * t;
+		this.y = start.y + (end.y - start.y) * t;
+		this.z = start.z + (end.z - start.z) * t;
+	}
+
+	// Sets the values of this Point based on a different Point
+	set(other) {
+		this.x = other.x;
+		this.y = other.y;
+		this.z = other.z;
+	}
 }
 
 P = (x, y, z = 0) => new Point(x, y, z);
@@ -80,13 +94,6 @@ class Curve {
 		}
 	}
 
-	// Updates the values of a Point based on animation state
-	animatePoint(p, start, end, t) {
-		p.x = start.x + (end.x - start.x) * t;
-		p.y = start.y + (end.y - start.y) * t;
-		p.z = start.z + (end.z - start.z) * t;
-	}
-
 	render() {
 		// If this curve hasn't appeared yet
 		if (this.t > T) {
@@ -96,9 +103,9 @@ class Curve {
 			// The animation has completed
 			if (this.isAnimating === true) {
 				this.isAnimating = false;
-				this.md1 = this.final.md1.clone();
-				this.md2 = this.final.md2.clone();
-				this.end = this.final.end.clone();
+				this.md1.set(this.final.md1.clone());
+				this.md2.set(this.final.md2.clone());
+				this.end.set(this.final.end.clone());
 			}
 		} else {
 			// Animate
@@ -106,9 +113,9 @@ class Curve {
 			const progress = /*Math.sin(PI / 2 **/ (T - this.t) / this.duration/*)*/;
 			// const mProgress = Math.min(progress * 3, 1);
 			const mProgress = Math.sin(PI / 2 * Math.min(progress * 1.75, 1));
-			this.animatePoint(this.md1, this.start, this.final.md1, mProgress);
-			this.animatePoint(this.md2, this.start, this.final.md2, mProgress);
-			this.animatePoint(this.end, this.start, this.final.end, progress);
+			this.md1.animate(this.start, this.final.md1, mProgress);
+			this.md2.animate(this.start, this.final.md2, mProgress);
+			this.end.animate(this.start, this.final.end, progress);
 			this.width = (0.75 + 0.25 * mProgress) * this.final.width;
 		}
 
@@ -197,13 +204,6 @@ class Leaf {
 		};
 	}
 
-	// Updates the values of a Point based on animation state
-	animatePoint(p, start, end, t) {
-		p.x = start.x + (end.x - start.x) * t;
-		p.y = start.y + (end.y - start.y) * t;
-		p.z = start.z + (end.z - start.z) * t;
-	}
-
 	render() {
 		// If this curve hasn't appeared yet
 		if (this.t > T) {
@@ -222,12 +222,12 @@ class Leaf {
 			this.isAnimating = true;
 			const progress = (T - this.t) / this.duration;
 			const mProgress = Math.sin(PI / 2 * progress);
-			this.animatePoint(this.end, this.start, this.final.end, mProgress);
+			this.end.animate(this.start, this.final.end, mProgress);
 
-			this.animatePoint(this.fm1, this.start, this.final.fm1, mProgress);
-			this.animatePoint(this.fm2, this.start, this.final.fm2, mProgress);
-			this.animatePoint(this.sm1, this.start, this.final.sm1, mProgress);
-			this.animatePoint(this.sm2, this.start, this.final.sm2, mProgress);
+			this.fm1.animate(this.start, this.final.fm1, mProgress);
+			this.fm2.animate(this.start, this.final.fm2, mProgress);
+			this.sm1.animate(this.start, this.final.sm1, mProgress);
+			this.sm2.animate(this.start, this.final.sm2, mProgress);
 			// this.width = (0.75 + 0.25 * mProgress) * this.final.width;
 		}
 

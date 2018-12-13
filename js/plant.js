@@ -16,10 +16,14 @@ class Plant {
 		
 		// Generate parts
 		this.parts = [];
+		const x = V_W / 2;
+		const y = V_H + 50;
+		const z = 0;
 		this.generate({
-			x: V_W / 2,
-			y: V_H + 50,
-			z: 0,
+			start: P(x, y, z),
+			x: x,
+			y: y,
+			z: z,
 			a: 3 * PI / 2,
 			l: 200,
 			w: 10,
@@ -82,11 +86,14 @@ class Plant {
 			prev.z + dz * r2 + range(-dvz, dvz)
 		);
 
+		// End
+		const end = P(x, y, z);
+
 		this.parts.push(new Curve(
-			P( prev.x, prev.y, prev.z ),
+			prev.start,
 			cp1,
 			cp2,
-			P(      x,      y,      z ),
+			end,
 			{
 				color: '#3E2723',
 				width: prev.w,
@@ -99,6 +106,7 @@ class Plant {
 
 		for (let i = count; i --; ) {
 			this.generate({
+				start: end,
 				x: x,
 				y: y,
 				z: z,
