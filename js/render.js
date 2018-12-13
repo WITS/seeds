@@ -28,16 +28,62 @@ class Point {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this._dx = 0;
+		this._dy = 0;
+		this.vdx = 0;
+		this.vdy = 0;
 	}
 
 	// The current x to use for rendering this point
 	get vx() {
-		return this.x + this.z * Z_RATIO * Z_X;
+		return this.x + this.dx + this.z * Z_RATIO * Z_X;
 	}
 
 	// The current y to use for rendering this point
 	get vy() {
-		return this.y + this.z * Z_RATIO * Z_Y;
+		return this.y + this.dy + this.z * Z_RATIO * Z_Y;
+	}
+
+	set dx(n) {
+		if (n === 0) {
+			this._dx = 0;
+		} else {
+			this.vdx = this._dx = n;
+		}
+	}
+	set dy(n) {
+		if (n === 0) {
+			this._dy = 0;
+		} else {
+			this.vdy = this._dy = n;
+		}
+	}
+
+	get dx() {
+		if (this._dx !== 0 || this._dx === this.vdx) {
+			return this._dx;
+		} else {
+			const delta = this._dx - this.vdx;
+			if (Math.abs(delta) < 0.1) {
+				this.vdx = this._dx;
+			} else {
+				this.vdx += delta * 0.1;
+			}
+			return this.vdx;
+		}
+	}
+	get dy() {
+		if (this._dy !== 0 || this._dy === this.vdy) {
+			return this._dy;
+		} else {
+			const delta = this._dy - this.vdy;
+			if (Math.abs(delta) < 0.1) {
+				this.vdy = this._dy;
+			} else {
+				this.vdy += delta * 0.1;
+			}
+			return this.vdy;
+		}
 	}
 
 	// Returns a copy of this point
@@ -57,6 +103,28 @@ class Point {
 		this.x = other.x;
 		this.y = other.y;
 		this.z = other.z;
+	}
+
+	// Calculates the distance between this and a location
+	distance(x, y) {
+		if (x instanceof Point === true) {
+			return this.distance(x.x, x.y);
+		} else {
+			return Math.sqrt(
+				Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2)
+			);
+		}
+	}
+
+	// Calculates the distance betwen this and a location (visually)
+	vDistance(x, y) {
+		if (x instanceof Point === true) {
+			return this.distance(x.vx, x.vy);
+		} else {
+			return Math.sqrt(
+				Math.pow(this.vx - x, 2) + Math.pow(this.vy - y, 2)
+			);
+		}
 	}
 }
 
@@ -91,6 +159,26 @@ class Curve {
 			this.fadeColor = `rgba(255, 255, 255, ${fadeA})`;
 		} else {
 			this.fadeColor = null;
+		}
+		// Keep track of this curves location
+		this.ancestors = options.ancestors || [];
+		this.descendents = options.descendents || [];
+		this.leaves = options.leaves || [];
+	}
+
+	// Updates dx/dy for points
+	setD(x, y) {
+		this.md1.dx = x;
+		this.md1.dy = y;
+
+		this.md2.dx = x;
+		this.md2.dy = y;
+
+		this.end.dx = x;
+		this.end.dy = y;
+
+		for (let leaf of this.leaves) {
+			leaf.setD(x, y);
 		}
 	}
 
@@ -150,7 +238,7 @@ class Curve {
 class Leaf {
 
 	constructor(json) {
-		this.start = P(json.x, json.y, json.z);
+		this.start = json.start || P(json.x, json.y, json.z);
 		const l = this.l = irange(40, 80);
 		const a = this.a = json.a || 0;
 		this.end = P(
@@ -202,6 +290,24 @@ class Leaf {
 			sm2: this.sm2.clone(),
 			end: this.end.clone()
 		};
+	}
+
+	// Updates dx/dy for points
+	setD(x, y) {
+		this.fm1.dx = x;
+		this.fm1.dy = y;
+
+		this.fm2.dx = x;
+		this.fm2.dy = y;
+
+		this.sm1.dx = x;
+		this.sm1.dy = y;
+
+		this.sm2.dx = x;
+		this.sm2.dy = y;
+
+		this.end.dx = x;
+		this.end.dy = y;
 	}
 
 	render() {

@@ -39,6 +39,9 @@ document.on('DOMContentLoaded', () => {
 });
 
 PREV_FRAME = Date.now();
+DRAGGING = null;
+DRAG_START_X = 0;
+DRAG_START_Y = 0;
 
 function update() {
 	requestAnimationFrame(update);
@@ -66,9 +69,75 @@ function update() {
 
 	// TEMP: render cursor
 	ctx.beginPath();
-	ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.16)';
 	ctx.arc(x(pointerX), y(pointerY), V_RATIO * 8, 0, TAU);
 	ctx.fill();
+
+	// If the user just pressed down
+	if (isPressed === true) {
+		// Look for a joint
+		let nearest = null;
+		let nearestD = Infinity;
+		for (let [point, part] of plant.joints) {
+			const d = point.vDistance(pointerX, pointerY);
+			if (d < nearestD) {
+				nearest = part;
+				nearestD = d;
+			}
+		}
+		// If a nearby joint was found
+		if (nearestD < 32) {
+			// Select it
+			DRAGGING = nearest;
+			DRAG_START_X = pointerX;
+			DRAG_START_Y = pointerY;
+		}
+	} else if (isReleased === true && DRAGGING !== null) {
+		// Unselect part
+		DRAGGING.setD(0, 0);
+		for (let part of DRAGGING.ancestors) {
+			part.setD(0, 0);
+		}
+		for (let sub of DRAGGING.descendents) {
+			for (let part of sub) {
+				part.setD(0, 0);
+			}
+		}
+		DRAGGING = null;
+	}
+
+	// Dragging
+	if (DRAGGING !== null) {
+		// Calculate pull
+		let x = pointerX - DRAG_START_X;
+		let y = pointerY - DRAG_START_Y;
+		let d = Math.sqrt(x * x + y * y) * 0.3333;
+		const a = Math.atan2(y, x);
+		const MAX_D = 128;
+		if (d > MAX_D) {
+			d = MAX_D;
+		}
+		x = d * Math.cos(a);
+		y = d * Math.sin(a);
+		// Update main part
+		DRAGGING.setD(x, y);
+
+		// Update ancestors
+		const r = 0.5;
+		let ratio = r;
+		for (let part of DRAGGING.ancestors) {
+			part.setD(ratio * x, ratio * y);
+			ratio *= r;
+		}
+		// Update descendents
+		ratio = r;
+		for (let sub of DRAGGING.descendents) {
+			for (let part of sub) {
+				part.setD(ratio * x, ratio * y);
+			}
+			ratio *= r;
+		}
+	}
 
 	// Render the plant
 	plant.render();

@@ -10,4 +10,5 @@ body {
 #view {
 	margin: auto;
 	display: block;
+	cursor: none;
 }

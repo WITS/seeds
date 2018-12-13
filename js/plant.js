@@ -16,6 +16,7 @@ class Plant {
 		
 		// Generate parts
 		this.parts = [];
+		this.joints = [];
 		const x = V_W / 2;
 		const y = V_H + 50;
 		const z = 0;
@@ -28,6 +29,7 @@ class Plant {
 			l: 200,
 			w: 10,
 			t: T,
+			path: [],
 			patternIndex: 0
 		});
 
@@ -38,13 +40,15 @@ class Plant {
 	// Generates the surface portion of the plant
 	generate(prev) {
 		// If the width is too low
+		let leaf;
 		if (prev.w < this.minW) {
 			// Stop here
 			return;
 		} else if (prev.patternIndex !== 0 && this.hasThorns && irandom(5)) {
 			// Add a thorn
 			const duration = irange(800, 5000);
-			this.parts.push(new Leaf({
+			leaf = new Leaf({
+				start: prev.start,
 				x: prev.x,
 				y: prev.y,
 				z: prev.z,
@@ -52,7 +56,9 @@ class Plant {
 				a: prev.a + choose(-1, 1) * PI / 2 + range(-0.36, 0.36),
 				t: prev.t - 50,
 				duration: duration
-			}));
+			});
+			this.parts.push(leaf);
+			prev.part.leaves.push(leaf);
 			prev.t += range(0.5, 1) * duration;
 		}
 
@@ -88,8 +94,7 @@ class Plant {
 
 		// End
 		const end = P(x, y, z);
-
-		this.parts.push(new Curve(
+		const part = new Curve(
 			prev.start,
 			cp1,
 			cp2,
@@ -98,12 +103,27 @@ class Plant {
 				color: '#3E2723',
 				width: prev.w,
 				t: prev.t,
-				duration: duration
+				duration: duration,
+				ancestors: prev.path
 			}
-		));
+		);
+		this.parts.push(part);
+		this.joints.push([end, part]);
 
+		// Update ancestors
+		if (prev.group) {
+			if (prev.group.length === 0) {
+				for (let x of part.ancestors) {
+					x.descendents.push(prev.group);
+				}
+			}
+			prev.group.push(part);
+		}
+
+		// Get the number of children this should split into
 		const count = this.splitPattern[prev.patternIndex];
-
+		// Create children
+		const group = [];
 		for (let i = count; i --; ) {
 			this.generate({
 				start: end,
@@ -114,6 +134,9 @@ class Plant {
 				l: prev.l * range(0.7, 0.95),
 				w: prev.w * range(0.65, 0.85),
 				t: prev.t + duration,
+				part: part,
+				path: prev.path.concat(part),
+				group: group,
 				patternIndex: prev.patternIndex + 1
 			});
 		}
