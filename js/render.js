@@ -67,7 +67,7 @@ class Point {
 			if (Math.abs(delta) < 0.1) {
 				this.vdx = this._dx;
 			} else {
-				this.vdx += delta * 0.1;
+				this.vdx += delta * 0.06;
 			}
 			return this.vdx;
 		}
@@ -80,7 +80,7 @@ class Point {
 			if (Math.abs(delta) < 0.1) {
 				this.vdy = this._dy;
 			} else {
-				this.vdy += delta * 0.1;
+				this.vdy += delta * 0.06;
 			}
 			return this.vdy;
 		}

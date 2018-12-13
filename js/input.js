@@ -21,10 +21,8 @@ if (!IS_TOUCH_DEVICE) {
 		const x = Math.max(0, Math.min(e.clientX / window.innerWidth, 1));
 		const y = Math.max(0, Math.min(e.clientY / window.innerHeight, 1));
 
-		if (DRAGGING === null) {
-			Z_T_X = Z_MIN + Z_RANGE * x;
-			Z_T_Y = Z_MIN + Z_RANGE * y;
-		}
+		Z_T_X = Z_MIN + Z_RANGE * x;
+		Z_T_Y = Z_MIN + Z_RANGE * y;
 	});
 } else {
 	window.on('deviceorientation', e => {

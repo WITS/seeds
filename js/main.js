@@ -144,12 +144,13 @@ function update() {
 
 	// Update the Z_X and Z_Y to match Z_T_X and Z_T_Y
 	const M_D = 0.01;
+	const SPD = (IS_TOUCH_DEVICE === false && DRAGGING === null ? 0.2 : 0.06);
 	if (Z_X !== Z_T_X) {
 		const D = Z_T_X - Z_X;
 		if (Math.abs(D) < M_D) {
 			Z_X = Z_T_X;
 		} else {
-			Z_X += D * 0.2;
+			Z_X += D * SPD;
 		}
 	}
 	if (Z_Y !== Z_T_Y) {
@@ -157,7 +158,7 @@ function update() {
 		if (Math.abs(D) < M_D) {
 			Z_Y = Z_T_Y;
 		} else {
-			Z_Y += D * 0.2;
+			Z_Y += D * SPD;
 		}
 	}
 
