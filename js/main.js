@@ -86,7 +86,7 @@ function update() {
 			}
 		}
 		// If a nearby joint was found
-		if (nearestD < 32) {
+		if (nearestD < 64) {
 			// Select it
 			DRAGGING = nearest;
 			DRAG_START_X = pointerX;
