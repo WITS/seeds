@@ -67,11 +67,13 @@ function update() {
 	// Clear the canvas
 	ctx.clearRect(0, 0, c.width, c.height);
 
-	// TEMP: render cursor
-	ctx.beginPath();
-	ctx.fillStyle = 'rgba(0, 0, 0, 0.16)';
-	ctx.arc(x(pointerX), y(pointerY), V_RATIO * 8, 0, TAU);
-	ctx.fill();
+	// Render cursor
+	if (IS_TOUCH_DEVICE === false) {
+		ctx.beginPath();
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.16)';
+		ctx.arc(x(pointerX), y(pointerY), V_RATIO * 8, 0, TAU);
+		ctx.fill();
+	}
 
 	// If the user just pressed down
 	if (isPressed === true) {
@@ -86,7 +88,7 @@ function update() {
 			}
 		}
 		// If a nearby joint was found
-		if (nearestD < 64) {
+		if (nearestD < 256) {
 			// Select it
 			DRAGGING = nearest;
 			DRAG_START_X = pointerX;
@@ -123,7 +125,7 @@ function update() {
 		DRAGGING.setD(x, y);
 
 		// Update ancestors
-		const r = 0.5;
+		const r = 0.75;
 		let ratio = r;
 		for (let part of DRAGGING.ancestors) {
 			part.setD(ratio * x, ratio * y);

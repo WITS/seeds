@@ -5,7 +5,7 @@ isReleased = false;
 pointerX = 0;
 pointerY = 0;
 rawPointerX = 0;
-rawPointerY = 0;
+rawPointerY = -100;
 
 // Listen for parallax
 if (!IS_TOUCH_DEVICE) {
@@ -16,8 +16,8 @@ if (!IS_TOUCH_DEVICE) {
 	window.on('blur',      e => isReleased = true);
 	// Mouse movement
 	window.on('mousemove', e => {
-		rawPointerX = e.clientX;
-		rawPointerY = e.clientY;
+		rawPointerX = e.clientX * DPI;
+		rawPointerY = e.clientY * DPI;
 		const x = Math.max(0, Math.min(e.clientX / window.innerWidth, 1));
 		const y = Math.max(0, Math.min(e.clientY / window.innerHeight, 1));
 
@@ -25,6 +25,29 @@ if (!IS_TOUCH_DEVICE) {
 		Z_T_Y = Z_MIN + Z_RANGE * y;
 	});
 } else {
+	// Listen for touch press
+	window.on('touchstart', e => {
+		isPressed = true;
+		rawPointerX = e.touches[0].clientX * DPI;
+		rawPointerY = e.touches[0].clientY * DPI;
+	});
+	// And release
+	window.on('touchend', e => {
+		if (e.touches.length === 0) {
+			isReleased = true;
+			rawPointerY = -100;
+		}
+	});
+	window.on('blur', () => {
+		isReleased = true;
+		rawPointerY = -100;
+	});
+	// And movement
+	window.on('touchmove', e => {
+		rawPointerX = e.touches[0].clientX * DPI;
+		rawPointerY = e.touches[0].clientY * DPI;
+	});
+	// Gyro
 	window.on('deviceorientation', e => {
 		// console.log(e);
 		// const x = ((270 + e.alpha) % 90) / 90;
