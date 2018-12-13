@@ -34,28 +34,6 @@ document.on('DOMContentLoaded', () => {
 	window.on('resize', resize);
 	resize();
 
-	// Listen for parallax
-	if (!IS_TOUCH_DEVICE) {
-		// Mouse movement
-		window.on('mousemove', e => {
-			const x = Math.max(0, Math.min(e.clientX / window.innerWidth, 1));
-			const y = Math.max(0, Math.min(e.clientY / window.innerHeight, 1));
-			Z_T_X = Z_MIN + Z_RANGE * x;
-			Z_T_Y = Z_MIN + Z_RANGE * y;
-		});
-	} else {
-		window.on('deviceorientation', e => {
-			// console.log(e);
-			// const x = ((270 + e.alpha) % 90) / 90;
-			// const y = ((270 + e.beta ) % 90) / 90;
-			// Z_T_X = Z_MIN + Z_RANGE * x;
-			// Z_T_Y = Z_MIN + Z_RANGE * y;
-			Z_T_X = Z_MAX * Math.sin(e.gamma * Math.PI / 90);
-			// Z_T_X = Z_MAX * Math.sin(e.alpha * Math.PI / 180);
-			Z_T_Y = Z_MAX * Math.sin(e.beta * Math.PI / 180);
-		});
-	}
-
 	// Start the animation loop
 	requestAnimationFrame(update);
 });
@@ -68,8 +46,31 @@ function update() {
 	T += Date.now() - PREV_FRAME;
 	PREV_FRAME = Date.now();
 
+	// Update input variables
+	if (isPressed === true) {
+		if (isHeld === false) {
+			isHeld = true;
+		} else {
+			isPressed = false;
+		}
+	} else if (isReleased === true) {
+		isHeld = false;
+	}
+
+	// Update pointer position
+	pointerX = (rawPointerX / V_RATIO) + V_X;
+	pointerY = (rawPointerY / V_RATIO) + V_Y;
+
+	// Clear the canvas
 	ctx.clearRect(0, 0, c.width, c.height);
 
+	// TEMP: render cursor
+	ctx.beginPath();
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+	ctx.arc(x(pointerX), y(pointerY), V_RATIO * 8, 0, TAU);
+	ctx.fill();
+
+	// Render the plant
 	plant.render();
 
 	// Update the Z_X and Z_Y to match Z_T_X and Z_T_Y
@@ -90,6 +91,10 @@ function update() {
 			Z_Y += D * 0.2;
 		}
 	}
+
+	// Update input
+	isPressed = false;
+	isReleased = false;
 }
 
 // returns a number between 0 and n, inclusive of 0, but not n
